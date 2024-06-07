@@ -1,0 +1,11 @@
+{
+  "vectorizer": {
+    "name": "doc2vec.model",
+    "type": "doc2vec"
+  },
+  "clusterizer": {
+    "type": "KMeans",
+    "kmeans_clusters": 7
+  }
+
+}
