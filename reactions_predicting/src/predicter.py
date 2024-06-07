@@ -6,9 +6,11 @@ from tokenize.vectorizer import vectorize
 from cluster.clusterizer import clustering
 import faiss
 import numpy as np
+import pandas as pd
 class reactions_predicter():
-    def __init__(self, posts):
-        self.posts = posts
+    def __init__(self, posts: pd.DataFrame, reactions_column: str):
+        self.reactions = posts[reactions_column]
+        self.posts = posts.drop(columns=[reactions_column])
         self.tokenizer = tokenize()
         tokens = posts.apply(self.tokenizer.predict_with_set,axis = 1)
         self.vectorizer = vectorize()
@@ -21,7 +23,7 @@ class reactions_predicter():
         settings = json.load(settings_file)
         index_filename = settings['index']['name']
         index_type = settings['index']['type']
-        self.index = faiss.load_index(index_filename)
+        self.index = faiss.read_index(index_filename)
         self.num_neighbours = settings['index']['num_neighbours']
     def predict(self, text):
         _, indices = self.index.search(self.vectors, self.num_neighbours)
@@ -34,7 +36,7 @@ class reactions_predicter():
                 dictionary[key] /= sum
 
         for post in indices:
-            reactions = post_with_reactions.iloc[post]['reactions']
+            reactions = self.reactions.iloc[post]
             reactions = reactions.iloc[0].split(',')
             total_reactions = 0
             for reaction in reactions:
