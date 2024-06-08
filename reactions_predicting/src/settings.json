@@ -6,6 +6,9 @@
   "clusterizer": {
     "type": "KMeans",
     "kmeans_clusters": 7
+  },
+  "index": {
+    "name": "simple.index",
+    "num_neighbours": 4
   }
-
 }
